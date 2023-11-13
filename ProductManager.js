@@ -1,61 +1,86 @@
-class ProductManagement {
-    constructor() {
-      this.products = [];
-      this.nextId = 1;
+
+  class TicketManager {
+    #aprecioBaseDeGanacia = 1.15;
+
+  constructor() {
+    this.eventos= [];
+    // this.products = [];
+  }
+
+
+  addEvento = (nombre, lugar, precio) => {
+
+    let candEventos = this.eventos.length;
+
+    if(!nombre || !lugar || !precio){
+      return 'Todos lo datos son requeridos'
     }
 
-    getProducts() {
-      return this.products;
+    const eventoLugar = this.eventos.find(evento => evento.lugar == lugar);
+
+    if (eventoLugar) {
+      return `El evento ya existe en: ${lugar}`;
     }
 
-    addProduct(name, price, description, image, code, stock) {
-
-      if (!name || !price || !description || !image || !code || !stock) {
-        console.error('Todos los campos son requeridos');
-        return;
-      }
-  
-      if (this.products.some(product => product.code === code)) {
-        console.error('Ya existe un producto con este código');
-        return;
-      }
-  
-      const newProduct = {
-        id: this.nextId++,
-        name,
-        price,
-        description,
-        image,
-        code,
-        stock
-      };
-  
-      this.products.push(newProduct);
-      console.log(`Producto ${name} agregado exitosamente`);
+    const evento = {
+      nombre, 
+      lugar,
+      precio: precio*this.#aprecioBaseDeGanacia,
+      capacidad: 50,
+      fecha: Date(),
+      partipantes: [],
+      id: ++candEventos
     }
-  
+    this.eventos.push(evento);
 
-  
-    getProductById(id) {
-      const product = this.products.find(product => product.id === id);
-      if (!product) {
-        console.error('Not found cgl');
-        return;
-      }
-      return product;
+    return this.eventos; 
+  }
+
+  getEventos = () =>{
+    return this.eventos;
+  }
+
+  getEvento = (idEvento) => {
+    const evento = this.eventos.find( evento => evento.id == idEvento );
+    if(evento){
+      return evento;
+    }else{
+      return 'Not found'
     }
   }
-  
+    addParticipante = (idEvento, idParticipante)=>{
+    const evento = this.getEvento(idEvento);
+    if(evento === 'Not found'){
+      return 'El evento no existe';
+    }
 
-  const productManager = new ProductManagement();
+    const registro = evento.partipantes.find(idPersona => idPersona == idParticipante);
+
+    if(registro){
+      return `El participante ${idParticipante} ya compro entradas`;
+    }
+    evento.partipantes.push(idParticipante);
+    return evento;
+  }
+}
+
+  const ticketManager = new TicketManager();
+
+  // let evento = ticketManager.getEvento(1);
+  let evento = ticketManager.addEvento('Baradero Rock','Bradero', 5000);
+  evento = ticketManager.addEvento('Baradero Rock','San pedro', 5000);
+  // console.log(evento);
+  console.log('--------------------------')
+  console.log('--------------------------')
+
+  // console.log('evento: ', evento);
+  const unEvento = ticketManager.getEvento(2);
+
+  // console.log(unEvento);
+  let user = ticketManager.addParticipante(1,1)
+  console.log(user);
+  user = ticketManager.addParticipante(1,2)
+  console.log(user);
+  user = ticketManager.addParticipante(1,2)
+  console.log(user);
   
-  productManager.addProduct('Laptop', 999.99, 'Laptop de alto rendimiento', 'laptop.png', 'LP100', 50);
-  productManager.addProduct('Smartphone', 599.99, 'Último modelo de smartphone', 'smartphone.png', 'SP200', 100);
-  
-  console.log(productManager.getProducts());
-  
-  console.log(productManager.getProductById(1));
-  console.log(productManager.getProductById(2));
-  console.log(productManager.getProductById(3));
-  
-  module.exports = ProductManagement;
