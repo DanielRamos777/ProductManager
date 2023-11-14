@@ -1,89 +1,76 @@
-
-  class TicketManager {
-    #aprecioBaseDeGanacia = 1.15;
-
+class TicketManager {
+  #aprecioBaseDeGanacia = 1.15;
   constructor() {
-    this.eventos= [];
-    // this.products = [];
+    this.eventos = [];
+    this.products = [];
   }
-
-
-  addEvento = (nombre, lugar, precio) => {
-
-    let candEventos = this.eventos.length;
-
-    if(!nombre || !lugar || !precio){
-      return 'Todos lo datos son requeridos'
+  addProduct = (code, title, description, price, thumbnail, stock) => {
+    if (!code || !title || !description || !price || !thumbnail || !stock) {
+      return 'Todos los datos son requeridos';
     }
-
-    const eventoLugar = this.eventos.find(evento => evento.lugar == lugar);
-
-    if (eventoLugar) {
-      return `El evento ya existe en: ${lugar}`;
+    const productCode = this.products.find((product) => product.code === code);
+    if (productCode) {
+      return `El producto ya existe con el código: ${code}`;
     }
-
-    const evento = {
-      nombre, 
-      lugar,
-      precio: precio*this.#aprecioBaseDeGanacia,
-      capacidad: 50,
-      fecha: Date(),
-      partipantes: [],
-      id: ++candEventos
-    }
-    this.eventos.push(evento);
-
-    return this.eventos; 
-  }
-
-  getEventos = () =>{
-    return this.eventos;
-  }
-
-  getEvento = (idEvento) => {
-    const evento = this.eventos.find( evento => evento.id == idEvento );
-    if(evento){
-      return evento;
-    }else{
-      return 'Not found'
-    }
-  }
-    addParticipante = (idEvento, idParticipante)=>{
+    const product = {
+      id: this.products.length + 1,
+      code,
+      title,
+      description,
+      price,
+      thumbnail,
+      stock,
+    };
+    this.products.push(product);
+    return this.products;
+  };
+  getEventos = () => this.eventos;
+  
+  getEvento = (idEvento) => this.eventos.find((evento) => evento.id == idEvento) || 'No encontrado';
+  
+  addParticipante = (idEvento, idParticipante) => {
     const evento = this.getEvento(idEvento);
-    if(evento === 'Not found'){
+    if (evento === 'No encontrado') {
       return 'El evento no existe';
     }
-
-    const registro = evento.partipantes.find(idPersona => idPersona == idParticipante);
-
-    if(registro){
-      return `El participante ${idParticipante} ya compro entradas`;
+    const registro = evento.partipantes.find((idPersona) => idPersona == idParticipante);
+    if (registro) {
+      return `El participante ${idParticipante} ya compró entradas`;
     }
     evento.partipantes.push(idParticipante);
     return evento;
-  }
+  };
+  
+  getProducts = () => this.products;
+  
+  getProductById = (productId) => this.products.find((product) => product.id === productId) || console.error('No encontrado');
 }
 
-  const ticketManager = new TicketManager();
-
-  // let evento = ticketManager.getEvento(1);
-  let evento = ticketManager.addEvento('Baradero Rock','Bradero', 5000);
-  evento = ticketManager.addEvento('Baradero Rock','San pedro', 5000);
-  // console.log(evento);
-  console.log('--------------------------')
-  console.log('--------------------------')
-
-  // console.log('evento: ', evento);
-  const unEvento = ticketManager.getEvento(2);
-
-  // console.log(unEvento);
-  let user = ticketManager.addParticipante(1,1)
-  console.log(user);
-  user = ticketManager.addParticipante(1,2)
-  console.log(user);
-  user = ticketManager.addParticipante(1,2)
-  console.log(user);
-  
+const ticketManager = new TicketManager();
+let producto = ticketManager.addProduct(
+  '001',
+  'Producto 1',
+  'Descripción del Producto 1',
+  100,
+  'ruta/imagen1.jpg',
+  10
+);
+producto = ticketManager.addProduct(
+  '002',
+  'Producto 2',
+  'Descripción del Producto 2',
+  200,
+  'ruta/imagen2.jpg',
+  5
+);
 
 
-  
+console.log('----------------PRUEBAS-----------------');
+console.log('----------------productos----------');
+const productos = ticketManager.getProducts();
+console.log(productos);
+console.log(producto);
+
+console.log('----------------productos-Id---------');
+
+console.log(ticketManager.getProductById(2));
