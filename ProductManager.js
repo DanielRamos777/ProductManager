@@ -1,76 +1,108 @@
-class TicketManager {
-  #aprecioBaseDeGanacia = 1.15;
-  constructor() {
-    this.eventos = [];
+const fs = require("fs");
+
+class ProductManager {
+  constructor(filename) {
+    this.filename = filename;
     this.products = [];
+    this.loadProducts();
   }
-  addProduct = (code, title, description, price, thumbnail, stock) => {
-    if (!code || !title || !description || !price || !thumbnail || !stock) {
-      return 'Todos los datos son requeridos';
+
+  loadProducts() {
+    try {
+      const data = fs.readFileSync(this.filename, "utf8");
+      this.products = JSON.parse(data);
+    } catch (error) {
+      this.products = [];
     }
-    const productCode = this.products.find((product) => product.code === code);
-    if (productCode) {
-      return `El producto ya existe con el código: ${code}`;
-    }
-    const product = {
+  }
+
+  saveProducts() {
+    const data = JSON.stringify(this.products);
+    fs.writeFileSync(this.filename, data, "utf8");
+  }
+
+  addProduct(product) {
+    const newProduct = {
       id: this.products.length + 1,
-      code,
-      title,
-      description,
-      price,
-      thumbnail,
-      stock,
+      ...product,
     };
-    this.products.push(product);
+
+    this.products.push(newProduct);
+    this.saveProducts();
+  }
+
+  getProductById(productId) {
+    return this.products.find((product) => product.id === productId);
+  }
+
+  updateProduct(productId, updatedProduct) {
+    const index = this.products.findIndex((product) => product.id === productId);
+    if (index !== -1) {
+      this.products[index] = { ...updatedProduct, id: productId };
+      this.saveProducts();
+      return true;
+    }
+    return false;
+  }
+
+  deleteProduct(productId) {
+    const index = this.products.findIndex(
+      (product) => product.id === productId
+    );
+    if (index !== -1) {
+      this.products.splice(index, 1);
+      this.saveProducts();
+      return true;
+    }
+    return false;
+  }
+
+  getAllProducts() {
     return this.products;
-  };
-  getEventos = () => this.eventos;
-  
-  getEvento = (idEvento) => this.eventos.find((evento) => evento.id == idEvento) || 'No encontrado';
-  
-  addParticipante = (idEvento, idParticipante) => {
-    const evento = this.getEvento(idEvento);
-    if (evento === 'No encontrado') {
-      return 'El evento no existe';
-    }
-    const registro = evento.partipantes.find((idPersona) => idPersona == idParticipante);
-    if (registro) {
-      return `El participante ${idParticipante} ya compró entradas`;
-    }
-    evento.partipantes.push(idParticipante);
-    return evento;
-  };
-  
-  getProducts = () => this.products;
-  
-  getProductById = (productId) => this.products.find((product) => product.id === productId) || console.error('No encontrado');
+  }
 }
 
-const ticketManager = new TicketManager();
-let producto = ticketManager.addProduct(
-  '001',
-  'Producto 1',
-  'Descripción del Producto 1',
-  100,
-  'ruta/imagen1.jpg',
-  10
-);
-producto = ticketManager.addProduct(
-  '002',
-  'Producto 2',
-  'Descripción del Producto 2',
-  200,
-  'ruta/imagen2.jpg',
-  5
-);
+const productManager = new ProductManager("products.json");
+
+const product1 = {
+  title: "Producto 1",
+  description: "Descripción del Producto 1",
+  price: 100,
+  thumbnail: "ruta/imagen1.jpg",
+  code: "001",
+  stock: 10,
+};
+const product2 = {
+  title: "Producto 2",
+  description: "Descripción del Producto 2",
+  price: 200,
+  thumbnail: "ruta/imagen2.jpg",
+  code: "002",
+  stock: 5,
+};
 
 
-console.log('----------------PRUEBAS-----------------');
-console.log('----------------productos----------');
-const productos = ticketManager.getProducts();
-console.log(productos);
-console.log(producto);
+productManager.addProduct(product1);
+productManager.addProduct(product2);
+const allProducts = productManager.getAllProducts();
+console.log(allProducts);
+const productById = productManager.getProductById(2);
+console.log(productById);
+const updatedProduct = {
+  code: "002",
+  title: "Producto 2 Modificado",
+  description: "Descripción del Producto 2 Modificado",
+  price: 250,
+  thumbnail: "ruta/imagen2_modificado.jpg",
+  stock: 8,
+};
 
-console.log('----------------productos-Id---------');
+console.log("------PRUEBAS------");
+const isUpdated = productManager.updateProduct(2, updatedProduct);
+console.log("¿Producto actualizado?", isUpdated);
 
-console.log(ticketManager.getProductById(2));
+const deletedProduct = productManager.deleteProduct(1);
+console.log("¿Producto eliminado?", deletedProduct);
+
+const remainingProducts = productManager.getAllProducts();
+console.log(remainingProducts);
