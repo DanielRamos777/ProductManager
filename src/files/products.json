@@ -1,0 +1,122 @@
+[
+  {
+    "id": 1,
+    "title": "Producto 1",
+    "description": "Descripción del Producto 1",
+    "price": 100,
+    "thumbnail": [
+      "ruta/imagen1.jpg",
+      "ruta/imagen1_2.jpg"
+    ],
+    "code": "001",
+    "stock": 10
+  },
+  {
+    "id": 2,
+    "title": "Producto 2",
+    "description": "Descripción del Producto 2",
+    "price": 200,
+    "thumbnail": [
+      "ruta/imagen2.jpg",
+      "ruta/imagen2_2.jpg"
+    ],
+    "code": "002",
+    "stock": 5
+  },
+  {
+    "id": 3,
+    "title": "Producto 3",
+    "description": "Descripción del Producto 3",
+    "price": 150,
+    "thumbnail": [
+      "ruta/imagen3.jpg",
+      "ruta/imagen3_2.jpg"
+    ],
+    "code": "003",
+    "stock": 8
+  },
+  {
+    "id": 4,
+    "title": "Producto 4",
+    "description": "Descripción del Producto 4",
+    "price": 180,
+    "thumbnail": [
+      "ruta/imagen4.jpg",
+      "ruta/imagen4_2.jpg"
+    ],
+    "code": "004",
+    "stock": 12
+  },
+  {
+    "id": 5,
+    "title": "Producto 5",
+    "description": "Descripción del Producto 5",
+    "price": 100,
+    "thumbnail": [
+      "ruta/imagen5.jpg",
+      "ruta/imagen5_2.jpg"
+    ],
+    "code": "005",
+    "stock": 10
+  },
+  {
+    "id": 6,
+    "title": "Producto 6",
+    "description": "Descripción del Producto 6",
+    "price": 120,
+    "thumbnail": [
+      "ruta/imagen6.jpg",
+      "ruta/imagen6_2.jpg"
+    ],
+    "code": "006",
+    "stock": 15
+  },
+  {
+    "id": 7,
+    "title": "Producto 7",
+    "description": "Descripción del Producto 7",
+    "price": 90,
+    "thumbnail": [
+      "ruta/imagen7.jpg",
+      "ruta/imagen7_2.jpg"
+    ],
+    "code": "007",
+    "stock": 7
+  },
+  {
+    "id": 8,
+    "title": "Producto 8",
+    "description": "Descripción del Producto 8",
+    "price": 220,
+    "thumbnail": [
+      "ruta/imagen8.jpg",
+      "ruta/imagen8_2.jpg"
+    ],
+    "code": "008",
+    "stock": 3
+  },
+  {
+    "id": 9,
+    "title": "Producto 9",
+    "description": "Descripción del Producto 9",
+    "price": 80,
+    "thumbnail": [
+      "ruta/imagen9.jpg",
+      "ruta/imagen9_2.jpg"
+    ],
+    "code": "009",
+    "stock": 20
+  },
+  {
+    "id": 10,
+    "title": "Producto 10",
+    "description": "Descripción del Producto 10",
+    "price": 150,
+    "thumbnail": [
+      "ruta/imagen10.jpg",
+      "ruta/imagen10_2.jpg"
+    ],
+    "code": "010",
+    "stock": 12
+  }
+]
