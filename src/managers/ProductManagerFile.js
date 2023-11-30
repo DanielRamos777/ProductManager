@@ -11,7 +11,7 @@ const __dirname = dirname(__filename);
 
 export class ProductManagerFile {
   constructor(filename) {
-    // Corrige la asignación del nombre de archivo
+
     this.filename = path.join(__dirname, '../files/products.json');
     console.log('../files/products.json', this.filename);
     this.loadProducts();
@@ -39,13 +39,14 @@ export class ProductManagerFile {
 
   addProduct(product) {
     const newProduct = {
-      id: this.idCounter,
-      ...product,
+        id: this.idCounter,
+        status: true,
+        ...product,
     };
     this.products.push(newProduct);
     this.idCounter++;
     this.saveProducts();
-  }
+}
 
   getProductById(productId) {
     return this.products.find((product) => product.id === productId);

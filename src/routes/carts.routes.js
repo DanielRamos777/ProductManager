@@ -1,4 +1,4 @@
-// archivo carts.routes.js
+
 import { Router } from "express";
 import { CartManagerFile } from "../managers/cartManagerFile.js";
 const path = "carts.Json";
