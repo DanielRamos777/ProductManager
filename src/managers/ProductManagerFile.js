@@ -1,19 +1,23 @@
-// Archhivo ProductManagerFile.js
+
 import fs from "fs";
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
+import path from 'path';  
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-import path from 'path';  
+
 
 export class ProductManagerFile {
   constructor(filename) {
-    this.filename = filename;
+    // Corrige la asignación del nombre de archivo
+    this.filename = path.join(__dirname, '../files/products.json');
+    console.log('../files/products.json', this.filename);
     this.loadProducts();
     this.idCounter = 1;
   }
+  
 
   loadProducts() {
     try {
@@ -136,10 +140,10 @@ const updatedProduct = {
 };
 
 const isUpdated = productManager.updateProduct( 0, updatedProduct);
-console.log("¿Producto actualizado?", isUpdated);
+// console.log("¿Producto actualizado?", isUpdated);
 
 const deletedProduct = productManager.deleteProduct(0);
-console.log("¿Producto eliminado?", deletedProduct);
+// console.log("¿Producto eliminado?", deletedProduct);
 
 const remainingProducts = productManager.getAllProducts();
 // console.log(remainingProducts);

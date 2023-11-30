@@ -1,74 +1,42 @@
-
+// archivo products.routes.js
 import { Router } from "express";
 import { ProductManagerFile } from "../managers/ProductManagerFile.js";
-
-const path = "products.Json";
+const path = "products.json";
 const router = Router();
 const productManagerFile = new ProductManagerFile(path);
 
 router.get('/', async (req, res) => {
+    const allProducts = productManagerFile.getAllProducts();
     res.send({
         status: "success",
-        msg: `Ruta GET Products`
+        msg: "Ruta GET Products",
+        products: allProducts
     });
 });
 
 router.get('/:pid', async (req, res) => {
+    const productId = parseInt(req.params.pid);
+    const product = productManagerFile.getProductById(productId);
+    if (!product) {
+        return res.status(404).send({
+            status: "error",
+            msg:  `Producto con ID ${productId} no encontrado.` 
+        });
+    }
     res.send({
         status: "success",
-        msg: `Ruta GET ID Products`
+        msg:  `Ruta GET ID Products` ,
+        product: product
     });
 });
 
 router.post('/', async (req, res) => {
-    // Lógica para crear un nuevo producto desde el body de la solicitud
+    const newProduct = req.body;
+    productManagerFile.addProduct(newProduct);
     res.send({
         status: "success",
-        msg: "Ruta POST Products"
-    });
-});
-
-router.put('/:pid', async (req, res) => {
-    const pid = req.params.pid;
-    const updatedFields = req.body;
-
-    // Verificar si el producto con el ID dado existe antes de intentar actualizarlo
-    const existingProduct = productManagerFile.getProductById(pid);
-    if (!existingProduct) {
-        return res.status(404).send({
-            status: "error",
-            msg: `Producto con ID ${pid} no encontrado. No se puede actualizar.`
-        });
-    }
-
-    // Actualizar los campos del producto sin cambiar el ID
-    const updatedProduct = { ...existingProduct, ...updatedFields };
-    productManagerFile.updateProduct(pid, updatedProduct);
-
-    res.send({
-        status: "success",
-        msg: `Ruta PUT de products con ID: ${pid}`
-    });
-});
-
-router.delete('/:pid', async (req, res) => {
-    const pid = req.params.pid;
-
-    // Verificar si el producto con el ID dado existe antes de intentar eliminarlo
-    const existingProduct = productManagerFile.getProductById(pid);
-    if (!existingProduct) {
-        return res.status(404).send({
-            status: "error",
-            msg: `Producto con ID ${pid} no encontrado. No se puede eliminar.`
-        });
-    }
-
-    // Eliminar el producto con el ID dado
-    productManagerFile.deleteProduct(pid);
-
-    res.send({
-        status: "success",
-        msg: `Ruta DELETE de products con ID: ${pid}`
+        msg: "Ruta POST Products",
+        newProduct: newProduct
     });
 });
 
