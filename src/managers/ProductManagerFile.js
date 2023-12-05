@@ -1,4 +1,4 @@
-// archivo ProductManagerFile.js
+// archivo src\managers\ProductManagerFile.js
 import fs from "fs";
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
@@ -11,12 +11,16 @@ const __dirname = dirname(__filename);
 
 export class ProductManagerFile {
   constructor(filename) {
-
     this.filename = path.resolve(__dirname, '../files/products.json');
-    console.log('../files/products.json', this.filename);
-    this.loadProducts();
     this.idCounter = 1;
+
+    if (!ProductManagerFile.productsLoaded) {
+      // console.log('../files/products.json', this.filename);
+      this.loadProducts();
+      ProductManagerFile.productsLoaded = true;
+    }
   }
+
   
 
   loadProducts() {
@@ -149,4 +153,4 @@ const deletedProduct = productManager.deleteProduct(0);
 const remainingProducts = productManager.getAllProducts();
 // console.log(remainingProducts);
 
-
+ProductManagerFile.productsLoaded = false;

@@ -1,6 +1,7 @@
-
+// archivo products.routes.js
 import { Router } from "express";
 import { ProductManagerFile } from "../managers/ProductManagerFile.js";
+import { Server } from "socket.io";
 
 const path = "products.json"; 
 const router = Router();
@@ -10,12 +11,9 @@ router.get('/', async (req, res) => {
     const limit = req.query.limit; 
     const allProducts = limit ? productManagerFile.getAllProducts().slice(0, limit) : productManagerFile.getAllProducts();
 
-    res.send({
-        status: "success",
-        msg: "Ruta GET Products",
-        products: allProducts
-    });
+    res.render('home', { products: allProducts });
 });
+
 
 router.get('/:pid', async (req, res) => {
     const productId = parseInt(req.params.pid);
@@ -36,13 +34,13 @@ router.get('/:pid', async (req, res) => {
 });
 
 router.post('/', async (req, res) => {
-
     const newProduct = {
-        status: true, 
+        status: true,
         ...req.body,
     };
-    productManagerFile.addProduct(newProduct);
 
+    productManagerFile.addProduct(newProduct);
+    req.io.emit('newProduct', newProduct);
     res.send({
         status: "success",
         msg: "Ruta POST Products",

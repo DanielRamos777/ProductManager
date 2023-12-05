@@ -1,6 +1,0 @@
-files/
-files/products.json
-files/carts.json
-{
-  "ignore": ["path/to/ignore/**/*.json"]
-}

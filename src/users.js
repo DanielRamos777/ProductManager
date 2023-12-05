@@ -1,4 +1,3 @@
-// archivo users.js
 const users = [
     {
       firstName: "John",

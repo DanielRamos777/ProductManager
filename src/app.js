@@ -1,38 +1,49 @@
-// Archivo app.js
+// Archivo src\app.js
+console.log(321)
 import express from "express";
 import { cartRouter } from "./routes/carts.routes.js";
 import { productRouter } from "./routes/products.routes.js";
 import { ProductManagerFile } from "./managers/ProductManagerFile.js";
-import handlebars from "express-handlebars";
-import users from "./users.js";
+// import expressHandlebars from "express-handlebars";
+import exphbs from "express-handlebars";
+
+// import users from "./users.js";
 import path from 'path';
+import { Server } from "socket.io";
+import { createServer } from "http";
 
 const productManager = new ProductManagerFile();
 const PORT = 8080;
 const app = express();
-
 const __dirname = path.dirname(new URL(import.meta.url).pathname);
-
 const productManagerFile = new ProductManagerFile(path.resolve(__dirname, '../files/products.json'));
+const httpServer = createServer(app);
+const io = new Server(httpServer);
+app.use(express.static(path.join(__dirname, "public")));
 
-app.engine("handlebars", handlebars.create({
-  extname: ".handlebars",
-  layoutsDir: path.join(__dirname, "views/layouts"),
-}).engine);
-app.set("views", path.join(__dirname, "views"));
+// ----------------------------------------------
+// Configurar Handlebars como el motor de plantillas
+app.engine(
+  "handlebars",
+  exphbs({
+    extname: ".handlebars",
+    layoutsDir: path.join(__dirname, "views/layouts"),
+  })
+);
 app.set("view engine", "handlebars");
+app.set("views", path.join(__dirname, "views"));
 
-app.get("/", (req, res) => {
-  const randomUser = users[Math.floor(Math.random() * users.length - 1)];
-  res.render("index", {
-    nombre: randomUser.nombre,
-    apellido: randomUser.apellido,
-    edad: randomUser.edad,
-  });
+// Configuración de Socket.IO
+io.on('connection', (socket) => {
+  console.log('Nuevo cliente conectado');
+});
+
+httpServer.listen(PORT, () => {
+  console.log(`Servidor funcionando en el puerto: ${PORT}`);
 });
 
 
-
+// Rutas
 app.get('/bienvenida', (req, res) => {
   res.send(`<h1 style="color: blue;">Bienvenido a mi primer servidor!</h1>`);
 });
@@ -46,9 +57,34 @@ app.get('/usuario', (req, res) => {
   });
 });
 
-app.listen(PORT, () => {
-  console.log(`Servidor funcionando en el puerto: ${PORT}`);
+// Ruta para la vista "realTimeProducts.handlebars"
+app.get('/realtimeproducts', (req, res) => {
+  // Puedes pasar los productos a la vista directamente o como parte del estado inicial
+  const data = {
+    title: 'Productos en Tiempo Real',
+    products: productManager.getAllProducts(),
+  };
+
+  res.render('realTimeProducts', data);
 });
 
+// app.listen(PORT, () => {
+//   console.log(`Servidor funcionando en el puerto: ${PORT}`);
+// });
+
+app.use((req, res, next) => {
+  req.io = io;
+  next();
+});
 app.use("/api/products", productRouter);
 app.use("/api/carts", cartRouter);
+
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).send('Something went wrong!');
+});
+
+console.log("Hola1556")
+
+
+export default app;

@@ -1,0 +1,58 @@
+<!-- archivo src\views\realTimeProducts.handlebars -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>{{title}}</h1>
+    <ul>
+        {{#each products}}
+            <li>{{this.title}} - {{this.description}} - {{this.price}}</li>
+        {{/each}}
+    </ul>
+
+    <form id="productForm">
+        <label for="title">Título:</label>
+        <input type="text" id="title" name="title" required>
+
+        <label for="price">Precio:</label>
+        <input type="number" id="price" name="price" required>
+
+        <label for="stock">Stock:</label>
+        <input type="number" id="stock" name="stock" required>
+
+        <button type="button" onclick="addProduct()">Agregar Producto</button>
+    </form>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.1.2/socket.io.js"></script>
+    <script>
+        const socket = io();
+
+        // Suscribirse a eventos de actualización de productos
+        socket.on('newProduct', (newProduct) => {
+            // Lógica para agregar el nuevo producto a la lista
+            console.log('Nuevo producto:', newProduct);
+            // Puedes actualizar la lista de productos en la vista aquí
+        });
+
+        socket.on('deleteProduct', (deletedProductId) => {
+            // Lógica para eliminar el producto de la lista
+            console.log('Producto eliminado:', deletedProductId);
+        });
+
+        // Lógica para manejar la adición de productos
+        function addProduct() {
+            const title = document.getElementById('title').value;
+            const price = document.getElementById('price').value;
+            const stock = document.getElementById('stock').value;
+
+            // Aquí puedes emitir un evento al servidor para agregar el producto
+            socket.emit('addProduct', { title, price, stock });
+        }
+    </script>
+</body>
+</html>
