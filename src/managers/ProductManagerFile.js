@@ -12,7 +12,7 @@ const __dirname = dirname(__filename);
 export class ProductManagerFile {
   constructor(filename) {
 
-    this.filename = path.join(__dirname, '../files/products.json');
+    this.filename = path.resolve(__dirname, '../files/products.json');
     console.log('../files/products.json', this.filename);
     this.loadProducts();
     this.idCounter = 1;

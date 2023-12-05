@@ -15,23 +15,13 @@ const __dirname = path.dirname(new URL(import.meta.url).pathname);
 
 const productManagerFile = new ProductManagerFile(path.resolve(__dirname, '../files/products.json'));
 
-// ...
-
-// ...
-
-// Configuración del motor de vistas Handlebars con opciones básicas
 app.engine("handlebars", handlebars.create({
-  extname: ".handlebars", // Agrega esta opción si tus archivos de vista tienen extensión .handlebars
-  layoutsDir: path.join(__dirname, "views/layouts"), // Agrega la ruta a la carpeta de layouts si es necesario
+  extname: ".handlebars",
+  layoutsDir: path.join(__dirname, "views/layouts"),
 }).engine);
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "handlebars");
 
-// ...
-
-
-
-// Ruta para renderizar la vista
 app.get("/", (req, res) => {
   const randomUser = users[Math.floor(Math.random() * users.length - 1)];
   res.render("index", {
@@ -40,6 +30,8 @@ app.get("/", (req, res) => {
     edad: randomUser.edad,
   });
 });
+
+
 
 app.get('/bienvenida', (req, res) => {
   res.send(`<h1 style="color: blue;">Bienvenido a mi primer servidor!</h1>`);
