@@ -1,5 +1,5 @@
 // Archivo src\app.js
-console.log(321)
+console.log(123)
 import express from "express";
 import { cartRouter } from "./routes/carts.routes.js";
 import { productRouter } from "./routes/products.routes.js";
@@ -11,7 +11,7 @@ import exphbs from "express-handlebars";
 import path from 'path';
 import { Server } from "socket.io";
 import { createServer } from "http";
-
+console.log(1)
 const productManager = new ProductManagerFile();
 const PORT = 8080;
 const app = express();
@@ -30,6 +30,7 @@ app.engine(
     layoutsDir: path.join(__dirname, "views/layouts"),
   })
 );
+console.log(2)
 app.set("view engine", "handlebars");
 app.set("views", path.join(__dirname, "views"));
 
@@ -42,7 +43,7 @@ httpServer.listen(PORT, () => {
   console.log(`Servidor funcionando en el puerto: ${PORT}`);
 });
 
-
+console.log(3)
 // Rutas
 app.get('/bienvenida', (req, res) => {
   res.send(`<h1 style="color: blue;">Bienvenido a mi primer servidor!</h1>`);
@@ -56,7 +57,7 @@ app.get('/usuario', (req, res) => {
     correo: "oscardanielramosvillalobos@gmail.com"
   });
 });
-
+console.log(4)
 // Ruta para la vista "realTimeProducts.handlebars"
 app.get('/realtimeproducts', (req, res) => {
   // Puedes pasar los productos a la vista directamente o como parte del estado inicial
@@ -71,7 +72,7 @@ app.get('/realtimeproducts', (req, res) => {
 // app.listen(PORT, () => {
 //   console.log(`Servidor funcionando en el puerto: ${PORT}`);
 // });
-
+console.log(5)
 app.use((req, res, next) => {
   req.io = io;
   next();
@@ -85,6 +86,5 @@ app.use((err, req, res, next) => {
 });
 
 console.log("Hola1556")
-
 
 export default app;
