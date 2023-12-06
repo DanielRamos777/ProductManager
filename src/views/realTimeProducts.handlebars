@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lista de Productos</title>
+  <link rel="stylesheet" type="text/css" href="/css/main.css">
+</head>
+<body>
+  <h1>Productos en Tiempo Real</h1>
+<!-- Agregar formulario para crear y eliminar productos -->
+<form id="productForm">
+  <label for="productName">Nombre del Producto:</label>
+  <input type="text" id="productName" name="productName" required>
+  <label for="productPrice">Precio del Producto:</label>
+  <input type="number" id="productPrice" name="productPrice" required>
+  <label for="productStatus">Estado del Producto:</label>
+  <select id="productStatus" name="productStatus" required>
+    <option value="true">Activo</option>
+    <option value="false">Inactivo</option>
+  </select>
+  <label for="productDescription">Descripción del Producto:</label>
+  <input type="text" id="productDescription" name="productDescription" required>
+  <label for="productCode">Código del Producto:</label>
+  <input type="text" id="productCode" name="productCode" required>
+  <label for="productStock">Stock del Producto:</label>
+  <input type="number" id="productStock" name="productStock" required>
+  <button type="button" onclick="addProduct()">Agregar Producto</button>
+  <button type="button" onclick="deleteProduct()">Eliminar Producto</button>
+</form>
+<h2>Eliminar Producto por ID</h2>
+<form id="deleteProductForm">
+  <label for="productIdToDelete">ID del Producto a Eliminar:</label>
+  <input type="number" id="productIdToDelete" name="productIdToDelete" required>
+  <button type="button" onclick="deleteProductById()">Eliminar Producto por ID</button>
+</form>
+  <ul id="realTimeProductList">
+    {{#each products}}
+      <li>
+        ID: {{this.id}}<br>
+        Estado: {{this.status}}<br>
+        Título: {{this.title}}<br>
+        Descripción: {{this.description}}<br>
+        Precio: {{this.price}}<br>
+        Código: {{this.code}}<br>
+        Stock: {{this.stock}}
+      </li>
+    {{/each}}
+  </ul>
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const socket = io();
+    socket.on('updateData', (data) => {
+      // Actualizar la lista de productos en tiempo real
+      const productList = document.getElementById('realTimeProductList');
+      productList.innerHTML = "";
+      data.products.forEach(product => {
+        const li = document.createElement('li');
+        li.innerHTML = `
+          ID: ${product.id}<br>
+          Estado: ${product.status}<br>
+          Título: ${product.title}<br>
+          Descripción: ${product.description}<br>
+          Precio: ${product.price}<br>
+          Código: ${product.code}<br>
+          Stock: ${product.stock}
+        `;
+        productList.appendChild(li);
+      });
+    });
+function addProduct() {
+  const productName = document.getElementById('productName').value;
+  const productPrice = document.getElementById('productPrice').value;
+  const productStatus = document.getElementById('productStatus').value;
+  const productDescription = document.getElementById('productDescription').value;
+  const productCode = document.getElementById('productCode').value;
+  const productStock = document.getElementById('productStock').value;
+  // Enviar un mensaje al servidor para agregar un producto
+  socket.emit('addProduct', {
+    title: productName,
+    price: productPrice,
+    status: productStatus === 'true',
+    description: productDescription,
+    code: productCode,
+    stock: productStock
+  });
+  // Limpiar los campos del formulario después de enviar la solicitud
+  document.getElementById('productName').value = '';
+  document.getElementById('productPrice').value = '';
+  document.getElementById('productStatus').value = 'true';
+  document.getElementById('productDescription').value = '';
+  document.getElementById('productCode').value = '';
+  document.getElementById('productStock').value = '';
+}
+  function deleteProductById() {
+    const productId = document.getElementById('productIdToDelete').value;
+    // Verificar si el ID es un número válido
+    if (!isNaN(productId)) {
+      // Enviar un mensaje al servidor para eliminar el producto por ID
+      socket.emit('deleteProductById', { id: parseInt(productId) });
+    } else {
+      alert('Ingrese un ID de producto válido.');
+    }
+  }
+  </script>
+</body>
+</html>

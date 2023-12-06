@@ -128,5 +128,32 @@
     ],
     "code": "010",
     "stock": 12
+  },
+  {
+    "id": 11,
+    "status": false,
+    "title": "123",
+    "price": 1213,
+    "description": "12113",
+    "code": "123",
+    "stock": 133
+  },
+  {
+    "id": 12,
+    "status": false,
+    "title": "Tasa",
+    "price": 10,
+    "description": "Tasa de color azul",
+    "code": "123",
+    "stock": 7
+  },
+  {
+    "id": 13,
+    "status": false,
+    "title": "pollo",
+    "price": 50,
+    "description": "Pollo asado",
+    "code": "1550",
+    "stock": 1
   }
 ]
