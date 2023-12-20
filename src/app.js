@@ -1,4 +1,4 @@
-
+// archivo src\app.js
 import express from "express";
 import http from "http";
 import { Server } from "socket.io";
@@ -8,6 +8,11 @@ import { productRouter } from "./routes/products.routes.js";
 import { ProductManagerFile } from "./managers/ProductManagerFile.js";
 import { fileURLToPath } from "url";
 import { dirname } from "path";
+import mongoose from "mongoose";
+import { userRouter } from "./routes/users.routes.js"; // Importa el enrutador de usuarios
+
+const MONGO = "mongodb+srv://oscardanielramosvillalobos:oscardanielramosvillalobos@cluster0.beo29ig.mongodb.net/BaseDeDatos";
+const connection = mongoose.connect(MONGO,{});
 
 const app = express();
 const server = http.createServer(app);
@@ -22,14 +27,20 @@ const productManagerFile = new ProductManagerFile(
 
 const PORT = process.env.PORT || 8080;
 
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
 app.engine(
   "handlebars",
   exphbs({
     extname: ".handlebars",
     layoutsDir: path.join(__dirname, "views/layouts"),
-    defaultLayout: "main",
+    defaultLayout: "main"
   })
 );
+
+app.set("view engine", "handlebars");
+app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "handlebars");
 app.set("views", path.join(__dirname, "views"));
 
@@ -78,6 +89,8 @@ io.on("connection", (socket) => {
 io.emit("updateData", { products: productManagerFile.getAllProducts() });
 
 app.use("/api/products", productRouter);
+app.use("/usuarios", userRouter);
+
 
 app.get("/realtimeproducts", (req, res) => {
   res.render("realTimeProducts");
@@ -85,6 +98,14 @@ app.get("/realtimeproducts", (req, res) => {
 
 app.get("/", (req, res) => {
   res.render("home", { products: productManagerFile.getAllProducts() });
+});
+// Manejo de errores global
+app.use((err, req, res, next) => {
+  console.error(err);
+  res.status(500).send({
+    status: "error",
+    message: "Error interno del servidor",
+  });
 });
 
 server.listen(PORT, () => {

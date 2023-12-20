@@ -1,4 +1,4 @@
-
+// archivo src\routes\views.routes.js
 import express from 'express';
 import { ProductManagerFile } from '../managers/ProductManagerFile.js';
 
