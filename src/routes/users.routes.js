@@ -17,10 +17,13 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 // Obtener todos los usuarios
-router.get("/usuarios", async (req, res) => {
+// Obtener todos los usuarios
+router.get("/", async (req, res) => {
   try {
     const users = await userModel.find();
-    res.render("users", { isAdmin: true, message: users });
+    const userObjects = users.map(user => user.toObject()); // Convertir a objetos planos
+
+    res.render("users", { isAdmin: true, message: userObjects });
   } catch (error) {
     console.error(error);
     res.status(500).send({
@@ -57,7 +60,7 @@ router.get("/usuarios/:id", async (req, res) => {
 });
 
 // Crear un nuevo usuario
-router.post("/", upload.single("thumbnail"), async (req, res) => {
+router.post("/register", upload.single("thumbnail"), async (req, res) => {
   const { first_name, last_name, email } = req.body;
 
   if (!first_name || !last_name || !email) {

@@ -1,19 +1,60 @@
-// archivo src\routes\register.routes.js
+// archivo src/routes/register.routes.js
 import { Router } from "express";
+import multer from "multer";
 import userModel from "../dao/models/user.model.js";
 
 const router = Router();
 
+// Configuración de Multer
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "public/images");
+  },
+  filename: function (req, file, cb) {
+    cb(null, `${Date.now()}-${file.originalname}`);
+  },
+});
 
-router.get("/", (req,res)=>{
-    res.render("register")
-})
+const upload = multer({ storage: storage });
 
-router.get("/usuarios", async (req,res)=>{
-    
-    const users = await userModel.find().lean();
+// Ruta GET para renderizar el formulario de registro
+router.get("/", (req, res) => {
+  res.render("register");
+});
 
-    res.render("users", {users, isAdmin: true} )
-})
+// Ruta POST para procesar el formulario de registro
+router.post("/", upload.single("thumbnail"), async (req, res) => {
+  const { first_name, last_name, email } = req.body;
 
-export { router as router };
+  if (!first_name || !last_name || !email) {
+    return res.status(400).send({
+      status: "error",
+      message: "Valores incompletos",
+    });
+  }
+
+  const filename = req.file ? req.file.filename : null;
+
+  const user = {
+    first_name,
+    last_name,
+    email,
+    thumbnail: filename ? `http://localhost:8080/images/${filename}` : null,
+  };
+
+  try {
+    const result = await userModel.create(user);
+    res.send({
+      status: "success",
+      message: result,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({
+      status: "error",
+      message: "Error interno del servidor",
+    });
+  }
+});
+
+export { router };

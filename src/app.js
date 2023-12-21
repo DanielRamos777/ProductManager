@@ -10,9 +10,18 @@ import { fileURLToPath } from "url";
 import { dirname } from "path";
 import mongoose from "mongoose";
 import { userRouter } from "./routes/users.routes.js"; // Importa el enrutador de usuarios
+// En tu archivo src/app.js
+import { router as registerRouter } from "./routes/register.routes.js";
+// import { registerRouter } from "./routes/register.routes.js"; 
+import multer from "multer";
 
 const MONGO = "mongodb+srv://oscardanielramosvillalobos:oscardanielramosvillalobos@cluster0.beo29ig.mongodb.net/BaseDeDatos";
-const connection = mongoose.connect(MONGO,{});
+const connection = mongoose.connect(MONGO, {
+  serverSelectionTimeoutMS: 5000, // Tiempo de espera para seleccionar un servidor (en milisegundos)
+});
+connection
+  .then(() => console.log("Conexión a MongoDB exitosa"))
+  .catch((error) => console.error("Error de conexión a MongoDB:", error));
 
 const app = express();
 const server = http.createServer(app);
@@ -72,6 +81,29 @@ io.on("connection", (socket) => {
     io.emit("updateData", { products: productManagerFile.getAllProducts() });
   });
 
+// Configuración de almacenamiento para Multer
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+      cb(null, "public/images");
+  },
+  filename: function (req, file, cb) {
+      cb(null, `${Date.now()}-${file.originalname}`);
+  },
+});
+
+// Configuración de Multer
+const upload = multer({ storage: storage });
+
+
+
+
+
+
+
+
+
+
+
   socket.on("deleteProductById", (data) => {
     const { id } = data;
 
@@ -85,11 +117,22 @@ io.on("connection", (socket) => {
     }
   });
 });
+const hbs = exphbs.create({
+  extname: ".handlebars",
+  layoutsDir: path.join(__dirname, "views/layouts"),
+  defaultLayout: "main",
+  // Agrega la siguiente opción:
+  allowProtoMethods: true,
+  // También puedes agregar allowProtoProperties si es necesario:
+  allowProtoProperties: true,
+});
+
 
 io.emit("updateData", { products: productManagerFile.getAllProducts() });
 
 app.use("/api/products", productRouter);
 app.use("/usuarios", userRouter);
+app.use("/registro", registerRouter);
 
 
 app.get("/realtimeproducts", (req, res) => {

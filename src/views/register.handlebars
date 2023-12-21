@@ -1,5 +1,6 @@
+{{!-- archivo src\views\register.handlebars --}}
 <div>
-    <form action="/api/users" enctype="multipart/form-data" method="post">
+    <form action="/registro" enctype="multipart/form-data" method="post">
         <div>
             <label>Nombre</label>
             <input name="first_name" id="first_name">
@@ -12,10 +13,10 @@
             <label>Email</label>
             <input name="email" id="email">
         </div>
-        <div>
-            <label>Imagen</label>
-            <input type="file" name="thumbnail">
-        </div>
+    <div>
+        <label>Imagen</label>
+        <input type="file" name="thumbnail">
+    </div>
 
         <input type="submit" value="Submit">
     </form>
